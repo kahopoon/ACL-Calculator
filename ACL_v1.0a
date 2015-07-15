@@ -1,0 +1,295 @@
+// |---------------------------------------------------------|   
+// |                                                   v1.0a |                                          
+// |                      ACL Calculator                     |
+// |                                                         |
+// |                        By kaho 7/2015  www.kahopoon.net |
+// |---------------------------------------------------------|
+//  
+
+import java.io.*;
+
+public class ACL {
+
+	public static void main(String[] args) throws IOException
+	{
+		System.out.println("        ****************************************");
+		System.out.println("        *                                v1.0a *");
+		System.out.println("        *            ACL Calculator            *");
+		System.out.println("        *                                      *");
+		System.out.println("        ****************************************");
+		System.out.println("");
+		
+		//Gather, check and transform information.
+		String networkdatabinary = "";
+		String wildcarddatabinary = "";
+		String targetdatabinary = "";
+		
+		InputStreamReader keyboardin = new InputStreamReader(System.in);
+		BufferedReader    input  = new BufferedReader( keyboardin );
+		
+		boolean stop = false;
+		while (!stop)
+		{
+			System.out.println("Please enter ACL IP Address (E.g 10.0.0.0)");
+			String inputdata =  input.readLine();
+			
+			//Basic error checking by syntax.
+			boolean inputerror = false;
+			for (int i = 0, x = 0; i < inputdata.length(); i++)
+			{
+				if (inputdata.charAt(i) == '.')
+				{
+					x = x + 1;
+				}
+				if (i == inputdata.length() - 1)
+				{
+					if (x != 3)
+					{
+						inputerror = true;
+					}
+				}
+			}
+			
+			//Basic checking completed, input store to variables for further checking.
+			int[] octet = new int [4];
+			if (inputerror == false)
+			{
+				 String[] inputnetwork = inputdata.split("\\.", 4);
+				 octet[0] = Integer.parseInt(inputnetwork[0]);
+				 octet[1] = Integer.parseInt(inputnetwork[1]);
+				 octet[2] = Integer.parseInt(inputnetwork[2]);
+				 octet[3] = Integer.parseInt(inputnetwork[3]);
+				 
+				 for (int i = 0; i < 4; i++)
+				 {
+					 if (octet[i] > 255 || octet[i] < 0)
+					 {
+						 inputerror = true;
+					 }
+				 }
+			} 
+			
+			// "That about 25% of the hours spent writing an application are spent figuring out ways the end user will do something wrong." -- Brian Humes.
+			if (inputerror)
+			{
+				 System.out.println("ACL IP syntax error! Please try again.");
+			}
+			else
+			{
+				for (int i = 0; i < 4; i++)
+				 {
+					 for (int k = 0; k < 8; k++)
+					 {
+						 if (octet[i] >= 128 / ((int)Math.pow(2, k)))
+						 {
+							 networkdatabinary = networkdatabinary + "1";
+							 octet[i] = octet[i] - (128 / ((int)Math.pow(2, k)));
+						 }
+						 else
+						 {
+							 networkdatabinary = networkdatabinary + "0";
+						 }
+					 }
+				 }
+				stop = true;
+			}
+		}
+		
+		stop = false;
+		while (!stop)
+		{
+			System.out.println("Please enter Wilcard Mask (E.g 0.0.0.255)");
+			String inputdata =  input.readLine();
+			
+			//Basic error checking by syntax.
+			boolean inputerror = false;
+			for (int i = 0, x = 0; i < inputdata.length(); i++)
+			{
+				if (inputdata.charAt(i) == '.')
+				{
+					x = x + 1;
+				}
+				if (i == inputdata.length() - 1)
+				{
+					if (x != 3)
+					{
+						inputerror = true;
+					}
+				}
+			}
+			
+			//Basic checking completed, input store to variables for further checking.
+			int[] octet = new int [4];
+			if (inputerror == false)
+			{
+				 String[] inputwildcard = inputdata.split("\\.", 4);
+				 octet[0] = Integer.parseInt(inputwildcard[0]);
+				 octet[1] = Integer.parseInt(inputwildcard[1]);
+				 octet[2] = Integer.parseInt(inputwildcard[2]);
+				 octet[3] = Integer.parseInt(inputwildcard[3]);
+				 
+				 for (int i = 0; i < 4; i++)
+				 {
+					 if (octet[i] > 255 || octet[i] < 0)
+					 {
+						 inputerror = true;
+					 }
+				 }
+			} 
+			
+			// "That about 25% of the hours spent writing an application are spent figuring out ways the end user will do something wrong." -- Brian Humes.
+			if (inputerror)
+			{
+				 System.out.println("Wildcard Mask syntax error! Please try again.");
+			}
+			else
+			{
+				for (int i = 0; i < 4; i++)
+				 {
+					 for (int k = 0; k < 8; k++)
+					 {
+						 if (octet[i] >= 128 / ((int)Math.pow(2, k)))
+						 {
+							 wildcarddatabinary = wildcarddatabinary + "1";
+							 octet[i] = octet[i] - (128 / ((int)Math.pow(2, k)));
+						 }
+						 else
+						 {
+							 wildcarddatabinary = wildcarddatabinary + "0";
+						 }
+					 }
+				 }
+				stop = true;
+			}
+		}
+		
+		stop = false;
+		while (!stop)
+		{
+			System.out.println("Please enter target IP Address (E.g 10.0.0.1)");
+			String inputdata =  input.readLine();
+			
+			//Basic error checking by syntax.
+			boolean inputerror = false;
+			for (int i = 0, x = 0; i < inputdata.length(); i++)
+			{
+				if (inputdata.charAt(i) == '.')
+				{
+					x = x + 1;
+				}
+				if (i == inputdata.length() - 1)
+				{
+					if (x != 3)
+					{
+						inputerror = true;
+					}
+				}
+			}
+			
+			//Basic checking completed, input store to variables for further checking.
+			int[] octet = new int [4];
+			if (inputerror == false)
+			{
+				 String[] inputtarget = inputdata.split("\\.", 4);
+				 octet[0] = Integer.parseInt(inputtarget[0]);
+				 octet[1] = Integer.parseInt(inputtarget[1]);
+				 octet[2] = Integer.parseInt(inputtarget[2]);
+				 octet[3] = Integer.parseInt(inputtarget[3]);
+				 
+				 for (int i = 0; i < 4; i++)
+				 {
+					 if (octet[i] > 255 || octet[i] < 0)
+					 {
+						 inputerror = true;
+					 }
+				 }
+			} 
+			
+			// "That about 25% of the hours spent writing an application are spent figuring out ways the end user will do something wrong." -- Brian Humes.
+			if (inputerror)
+			{
+				 System.out.println("Target IP syntax error! Please try again.");
+			}
+			else
+			{
+				for (int i = 0; i < 4; i++)
+				 {
+					 for (int k = 0; k < 8; k++)
+					 {
+						 if (octet[i] >= 128 / ((int)Math.pow(2, k)))
+						 {
+							 targetdatabinary = targetdatabinary + "1";
+							 octet[i] = octet[i] - (128 / ((int)Math.pow(2, k)));
+						 }
+						 else
+						 {
+							 targetdatabinary = targetdatabinary + "0";
+						 }
+					 }
+				 }
+				stop = true;
+			}
+		}
+		
+		//Output binary data to user screen.
+		System.out.println("");
+		System.out.println("--------------------------------------------------------------");
+		System.out.println(networkdatabinary + " (Binary of ACL IP Address)");
+		System.out.println(wildcarddatabinary + " (Binary of Wildcard Mask)");
+		System.out.println(targetdatabinary + " (Binary of target IP Address)");
+		System.out.println("--------------------------------------------------------------");
+		System.out.println("");
+		
+		//Output calculation.
+		boolean pass = true;
+		for (int g = 0; g < 32; g++)
+		{
+			if (wildcarddatabinary.charAt(g) == '0')
+			{
+				System.out.print( (g + 1) + " Bit: Check = Yes, ");
+				if (networkdatabinary.charAt(g) == targetdatabinary.charAt(g))
+				{
+					System.out.print("Match = Yes, Pass = Yes.");
+					System.out.println("");
+				}
+				else
+				{
+					System.out.print("Match = No, Pass = No.");
+					System.out.println("");
+					pass = false;
+				}
+			}
+			else if (wildcarddatabinary.charAt(g) == '1')
+			{
+				System.out.print( (g + 1) + " Bit: Check = No, ");
+				if (networkdatabinary.charAt(g) == targetdatabinary.charAt(g))
+				{
+					System.out.print("Match = Yes, Pass = Yes.");
+					System.out.println("");
+				}
+				else
+				{
+					System.out.print("Match = No, Pass = Yes.");
+					System.out.println("");
+				}
+			}
+		}
+		
+		//Conclusion output.
+		System.out.println("");
+		System.out.println("--------------------------------------------------------------");
+		if (pass)
+		{
+			System.out.println("All Pass = Yes, Include = Yes.");
+		}
+		else
+		{
+			System.out.println("All Pass = No, Include = No.");
+		}
+		System.out.println("--------------------------------------------------------------");
+		
+		//End of Program.
+		System.out.println("");
+		System.out.println("End of Program, Goodbye!");
+	}
+}
